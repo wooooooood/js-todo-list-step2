@@ -7,13 +7,13 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
   this.userName = '';
   this.userId = userId;
   this.userList = [];
-  
-  const onUserCreateHandler = async() => {
+
+  const onUserCreateHandler = async () => {
     const userName = prompt('추가하고 싶은 이름을 입력해주세요.');
     await API.AddUser(userName);
     this.setState(this.userId);
   };
-  
+
   this.setState = async (activeUserId) => {
     this.userId = activeUserId;
     this.userList = await API.GetUsers();
@@ -38,8 +38,8 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
 
   this.render = () => {
     this.$userTitle.innerHTML = `<span><strong>${this.userName}</strong>'s Todo List</span>`;
-    this.$userList.innerHTML = this.userList.map(({name, _id}) => 
-    `<button class="ripple ${this.userId === _id && 'active'}" id=${_id}>${name}</button>`
+    this.$userList.innerHTML = this.userList.map(({name, _id}) =>
+      `<button class="ripple ${this.userId === _id && 'active'}" id=${_id}>${name}</button>`,
     ).join('') + `<button class="ripple user-create-button">+ 유저 생성</button>`;
   };
 

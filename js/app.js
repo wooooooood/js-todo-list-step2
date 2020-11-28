@@ -44,7 +44,7 @@ function App() {
     this.addItem(text);
   });
 
-  //const todoCount = new TodoCount($todoCount);
+  // const todoCount = new TodoCount($todoCount);
   const todoUser = new TodoUser($userTitle, $userCreateButton, $userList, this.userId, (activeUserId) => {
     this.setState(activeUserId);
   });

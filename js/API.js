@@ -2,7 +2,7 @@ import {ADDRESS, DEFAULT_USER} from './constants.js';
 
 export const API = {
   GetUsers: async () => {
-    try{
+    try {
       const response = await fetch(`${ADDRESS}/api/users`, ApiOptions.GET());
       return await response.json();
     } catch {
@@ -13,10 +13,11 @@ export const API = {
     await fetch(`${ADDRESS}/api/users`, ApiOptions.POST({name: userName}));
   },
   GetTodoItems: async (userId) => {
-    try{
+    try {
       const response = await fetch(`${ADDRESS}/api/users/${userId}/items`, ApiOptions.GET());
-      if (response.ok)
+      if (response.ok) {
         return await response.json();
+      }
       return [];
     } catch {
       return [];
@@ -33,7 +34,7 @@ export const API = {
   },
   EditItem: async (userId, itemId, newContentText) => {
     await fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}`, ApiOptions.EDIT({contents: newContentText}));
-  }
+  },
 };
 
 export const ApiOptions = {
@@ -62,7 +63,7 @@ export const ApiOptions = {
   EDIT: (data) => {
     return {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
     };
   },

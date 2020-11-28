@@ -1,6 +1,6 @@
 export const DEFAULT_USER = {
   _id: 'Someone',
-  name: 'Someone'
+  name: 'Someone',
 };
 
 export const KEY = {

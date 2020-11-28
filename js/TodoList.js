@@ -13,10 +13,10 @@ export default function TodoList($todoList, userId) {
   };
 
   this.setState = async (activeUserId) => {
-      this.userId = activeUserId;
-      this.data = await API.GetTodoItems(this.userId);
-      this.render();
-      this.bindEvents();
+    this.userId = activeUserId;
+    this.data = await API.GetTodoItems(this.userId);
+    this.render();
+    this.bindEvents();
   };
 
   this.bindEvents = () => {
@@ -83,7 +83,7 @@ export default function TodoList($todoList, userId) {
   };
 
   this.render = () => {
-    this.$todoList.innerHTML = this.data.map(({_id, contents, isCompleted, priority}, index) => 
+    this.$todoList.innerHTML = this.data.map(({_id, contents, isCompleted, priority}, index) =>
       `<li class="todo-item ${isCompleted ? 'completed' : ''}" data-index="${index}" id="${_id}">
         <div class="view">
         <input class="toggle" type="checkbox" ${isCompleted ? 'checked' : ''} />
@@ -97,7 +97,7 @@ export default function TodoList($todoList, userId) {
         <button class="destroy"></button>
         </div>
         <input class="edit" value="${contents}" />
-        </li>`
+        </li>`,
     ).join('');
   };
 
