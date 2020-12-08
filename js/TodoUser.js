@@ -9,7 +9,12 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
   this.userList = [];
 
   const onUserCreateHandler = async () => {
-    const userName = prompt('추가하고 싶은 이름을 입력해주세요.');
+    const userName = prompt('추가하고 싶은 이름을 입력해주세요. (2글자 이상)');
+    if (userName.length < 2){
+      alert('2글자 이상의 이름을 입력해 주세요!');
+      return;
+    }
+
     await API.AddUser(userName);
     this.setState(this.userId);
   };
