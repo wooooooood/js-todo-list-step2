@@ -1,4 +1,4 @@
-import {ADDRESS, DEFAULT_USER} from './constants.js';
+import {ADDRESS} from './constants.js';
 
 export const API = {
   GetUsers: async () => {
@@ -6,7 +6,7 @@ export const API = {
       const response = await fetch(`${ADDRESS}/api/users`, ApiOptions.GET());
       return await response.json();
     } catch {
-      return DEFAULT_USER.json();
+      return [];
     }
   },
   AddUser: async (userName) => {

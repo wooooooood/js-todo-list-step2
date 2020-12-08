@@ -1,10 +1,11 @@
 import {API} from './API.js';
+import {DEFAULT_USER} from './constants.js';
 
 export default function TodoUser($userTitle, $userCreateButton, $userList, userId, setActiveUser) {
   this.$userTitle = $userTitle;
   this.$userList = $userList;
   this.$userCreateButton = $userCreateButton;
-  this.userName = '';
+  this.userName = DEFAULT_USER.name;
   this.userId = userId;
   this.userList = [];
 
