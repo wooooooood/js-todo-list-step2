@@ -1,16 +1,15 @@
 import {ADDRESS} from './constants.js';
 
-export const API = {
+export const Api = {
   GetUsers: async () => {
     try {
       const response = await fetch(`${ADDRESS}/api/users`, ApiOptions.GET());
       return await response.json();
-    } catch {
-      return [];
+    } catch (e) {
+      console.error(e);
     }
-  },
-  AddUser: async (userName) => {
-    await fetch(`${ADDRESS}/api/users`, ApiOptions.POST({name: userName}));
+
+    return [];
   },
   GetTodoItems: async (userId) => {
     try {
@@ -18,53 +17,27 @@ export const API = {
       if (response.ok) {
         return await response.json();
       }
-      return [];
-    } catch {
-      return [];
+    } catch (e) {
+      console.error(e);
     }
+    
+    return [];
   },
-  AddItem: async (userId, contentText) => {
-    await fetch(`${ADDRESS}/api/users/${userId}/items`, ApiOptions.POST({contents: contentText}));
-  },
-  DeleteItem: async (userId, itemId) => {
-    await fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}`, ApiOptions.DELETE());
-  },
-  ToggleItem: async (userId, itemId) => {
-    await fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}/toggle`, ApiOptions.TOGGLE());
-  },
-  EditItem: async (userId, itemId, newContentText) => {
-    await fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}`, ApiOptions.EDIT({contents: newContentText}));
-  },
+  AddUser: (userName) => fetch(`${ADDRESS}/api/users`, ApiOptions.POST({name: userName})),
+  AddItem: (userId, contentText) => fetch(`${ADDRESS}/api/users/${userId}/items`, ApiOptions.POST({contents: contentText})),
+  DeleteItem: (userId, itemId) => fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}`, ApiOptions.DELETE()),
+  ToggleItem: (userId, itemId) => fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}/toggle`, ApiOptions.TOGGLE()),
+  EditItem: (userId, itemId, newContentText) => fetch(`${ADDRESS}/api/users/${userId}/items/${itemId}`, ApiOptions.EDIT({contents: newContentText})),
 };
 
 export const ApiOptions = {
-  POST: (data) => {
-    return {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
-    };
-  },
-  GET: () => {
-    return {
-      method: 'GET',
-    };
-  },
-  DELETE: () => {
-    return {
-      method: 'DELETE',
-    };
-  },
-  TOGGLE: () => {
-    return {
-      method: 'PUT',
-    };
-  },
-  EDIT: (data) => {
-    return {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
-    };
-  },
+  GET: () => ({ method: 'GET' }),
+  DELETE: () => ({ method: 'DELETE' }),
+  TOGGLE: () => ({ method: 'PUT' }),
+  EDIT: data => ({ ...ApiOptions.BODY(data), method: 'PUT' }),
+  POST: data => ({ ...ApiOptions.BODY(data), method: 'POST' }),
+  BODY: data => ({
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  }),
 };

@@ -1,4 +1,4 @@
-import {API} from './API.js';
+import {Api} from './Api.js';
 import {DEFAULT_USER} from './constants.js';
 
 export default function TodoUser($userTitle, $userCreateButton, $userList, userId, setActiveUser) {
@@ -16,13 +16,13 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
       return;
     }
 
-    await API.AddUser(userName);
+    await Api.AddUser(userName);
     this.setState(this.userId);
   };
 
   this.setState = async (activeUserId) => {
     this.userId = activeUserId;
-    this.userList = await API.GetUsers();
+    this.userList = await Api.GetUsers();
     this.render();
     this.bindEvents();
   };

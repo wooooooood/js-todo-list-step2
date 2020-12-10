@@ -1,5 +1,5 @@
 import {KEY} from './constants.js';
-import {API} from './API.js';
+import {Api} from './Api.js';
 
 export default function TodoList($todoList, userId) {
   this.$todoList = $todoList;
@@ -14,7 +14,7 @@ export default function TodoList($todoList, userId) {
 
   this.setState = async (activeUserId) => {
     this.userId = activeUserId;
-    this.data = await API.GetTodoItems(this.userId);
+    this.data = await Api.GetTodoItems(this.userId);
     this.render();
     this.bindEvents();
   };
@@ -61,24 +61,24 @@ export default function TodoList($todoList, userId) {
   };
 
   this.post = async (text) => {
-    await API.AddItem(this.userId, text);
-    this.data = await API.GetTodoItems(this.userId);
+    await Api.AddItem(this.userId, text);
+    this.data = await Api.GetTodoItems(this.userId);
     this.setState(this.userId);
   };
 
   this.delete = async (_id) => {
-    await API.DeleteItem(this.userId, _id);
-    this.data = await API.GetTodoItems(this.userId);
+    await Api.DeleteItem(this.userId, _id);
+    this.data = await Api.GetTodoItems(this.userId);
     this.setState(this.userId);
   };
 
   this.toggle = async (_id) => {
-    await API.ToggleItem(this.userId, _id);
+    await Api.ToggleItem(this.userId, _id);
   };
 
   this.edit = async (_id, text) => {
-    await API.EditItem(this.userId, _id, text);
-    this.data = await API.GetTodoItems(this.userId);
+    await Api.EditItem(this.userId, _id, text);
+    this.data = await Api.GetTodoItems(this.userId);
     this.setState(this.userId);
   };
 
