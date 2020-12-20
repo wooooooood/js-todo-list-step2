@@ -1,9 +1,9 @@
-import {KEY} from './constants.js';
+import {KEY, DEFAULT_USER} from './constants.js';
 import {Api} from './Api.js';
 
-export default function TodoList($todoList, userId) {
+export default function TodoList($todoList, {updateData, removeItem, editItem, refreshItems}) {
   this.$todoList = $todoList;
-  this.userId = userId;
+  this.userId = DEFAULT_USER._id;
   this.data = [];
 
   this.editItem = (index, text) => {
@@ -17,49 +17,58 @@ export default function TodoList($todoList, userId) {
     this.data = await Api.GetTodoItems(this.userId);
     this.render();
     this.bindEvents();
+
+    // updateData(this.data);
+  };
+
+  this.updateItem = (nextData) => {
+    this.data = [...nextData];
+    this.setState();
   };
 
   this.bindEvents = () => {
     document.querySelectorAll('.todo-item').forEach(($item) => {
-      $item.querySelector('input.toggle').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const $todoItem = e.target.closest('.todo-item');
-        const {index} = $todoItem.dataset;
-
-        if ($todoItem.classList.contains('completed')) {
-          $todoItem.classList.remove('completed');
-          this.data[index].isCompleted = false;
-        } else {
-          $todoItem.classList.add('completed');
-          this.data[index].isCompleted = true;
+      $item.addEventListener('click', ({target}) => {
+        if (target.tagName === 'INPUT' && target.classList.contains('toggle')) {
+          const $todoItem = target.closest('.todo-item');
+          const {index} = $todoItem.dataset;
+          const item = this.data[index];
+          const isCompleted = !$todoItem.classList.contains('completed');
+          item.isCompleted = isCompleted;
+          $todoItem.classList[isCompleted ? 'add' : 'remove']('completed');
         }
-        this.toggle($todoItem.id);
+
+        if (target.classList.contains('destroy')) {
+          const {index} = target.closest('.todo-item').dataset;
+          removeItem(Number(index));
+        }
+
+        refreshItems();
       });
 
-      $item.querySelector('button.destroy').addEventListener('click', ({target}) => {
-        const _id = target.closest('.todo-item').id;
-        this.delete(_id);
-      });
-
-      $item.querySelector('label').addEventListener('dblclick', ({target}) => {
+      $item.addEventListener('dblclick', ({target}) => {
         const $todoItem = target.closest('.todo-item');
         const {index} = target.closest('.todo-item').dataset;
         const oldValue = target.innerText;
 
         $todoItem.classList.add('editing');
+        $todoItem.querySelector('.edit').focus();
+        $todoItem.querySelector('.edit').setSelectionRange(oldValue.length, oldValue.length);
         $todoItem.addEventListener('keyup', ({key, target}) => {
           if (key === KEY.ESC) {
-            $todoItem.classList.remove('editing');
             target.value = oldValue;
+            $todoItem.classList.remove('editing');
           } else if (key === KEY.ENTER) {
-            this.editItem(index, target.value);
-            this.edit($todoItem.id, target.value);
+            editItem(index, target.value);
           }
         });
       });
+
+      $item.addEventListener('focusout', ({target}) => {
+        target.closest('.todo-item').classList.remove('editing');
+      });
     });
   };
-
   this.post = async (text) => {
     await Api.AddItem(this.userId, text);
     this.data = await Api.GetTodoItems(this.userId);
@@ -83,23 +92,17 @@ export default function TodoList($todoList, userId) {
   };
 
   this.render = () => {
-    this.$todoList.innerHTML = this.data.map(({_id, contents, isCompleted, priority}, index) =>
-      `<li class="todo-item ${isCompleted ? 'completed' : ''}" data-index="${index}" id="${_id}">
+    this.$todoList.innerHTML = this.data.map(({text, isCompleted}, index) => `
+      <li class="todo-item ${isCompleted? 'completed' : ''}" data-index="${index}">
         <div class="view">
-        <input class="toggle" type="checkbox" ${isCompleted ? 'checked' : ''} />
-        <label class="label">
-        <select class="chip select">
-          <option value="0" ${priority === 'NONE' ? 'selected' : ''}>순위</option>
-          <option value="1" ${priority === '1' ? 'selected' : ''}>1순위</option>
-          <option value="2" ${priority === '2' ? 'selected' : ''}>2순위</option>
-        </select>
-        ${contents}</label>
-        <button class="destroy"></button>
+          <input class="toggle" type="checkbox" ${isCompleted? 'checked' : ''} />
+          <label class="label">${text}</label>
+          <button class="destroy"></button>
         </div>
-        <input class="edit" value="${contents}" />
-        </li>`,
-    ).join('');
+        <input class="edit" value="${text}" />
+      </li>
+    `).join('');
   };
 
   this.setState(this.userId);
-}
+};

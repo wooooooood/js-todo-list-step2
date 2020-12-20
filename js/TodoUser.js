@@ -17,7 +17,6 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
     }
 
     await Api.AddUser(userName);
-    this.setState(this.userId);
   };
 
   this.setState = async (activeUserId) => {
@@ -25,6 +24,8 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
     this.userList = await Api.GetUsers();
     this.render();
     this.bindEvents();
+
+    setActiveUser(this.userId);
   };
 
   this.bindEvents = () => {
@@ -35,7 +36,6 @@ export default function TodoUser($userTitle, $userCreateButton, $userList, userI
         } else {
           this.userName = target.innerText;
           this.userId = target.id;
-          setActiveUser(this.userId);
         }
         this.setState(this.userId);
       });
